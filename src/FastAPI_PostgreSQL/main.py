@@ -4,6 +4,7 @@ from typing import Any
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Path, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -161,7 +162,9 @@ Part 8: Create the FastAPI app
 """
 app = FastAPI()
 
-
+app.add_middleware(
+    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
+)
 """
 Step 9: Get one Student
 
