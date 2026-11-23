@@ -2,7 +2,7 @@
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const DEFAULT_API = 'http://127.0.0.1:8000';
+  const DEFAULT_API = 'https://fastapi-and-postgresql.onrender.com/';
 
   const store = {
     get(k, d) { try { return localStorage.getItem(k) || d; } catch { return d; } },
