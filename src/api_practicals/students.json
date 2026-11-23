@@ -1,0 +1,23 @@
+{
+    "S1001": {
+        "name": "Dark Lord",
+        "age": 99,
+        "course": "Sarcasm",
+        "gpa": 4.0,
+        "email": "darklord@pataal.com"
+    },
+    "S1002": {
+        "name": "Siya Sharma",
+        "age": 19,
+        "course": "Python",
+        "gpa": 4.0,
+        "email": "siyasharma@mithila.com"
+    },
+    "S1003": {
+        "name": "Janak Raja",
+        "age": 21,
+        "course": "Data Science",
+        "gpa": 3.3,
+        "email": "janakraja@mithila.com"
+    }
+}

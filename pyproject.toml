@@ -1,0 +1,23 @@
+[project]
+name = "api-practicals"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Bhargav Sharma", email = "bhargav.sharma548@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.162.7",
+    "psycopg[binary]>=3.3.9",
+    "pydantic[email]>=2.14.3",
+    "sqlalchemy>=2.1.8",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+api-practicals = "api_practicals:main"
+
+[build-system]
+requires = ["uv_build>=0.13.8,<0.14.0"]
+build-backend = "uv_build"

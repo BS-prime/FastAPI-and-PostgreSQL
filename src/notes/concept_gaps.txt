@@ -1,0 +1,10 @@
+JWT authentication + authorization
+Password hashing
+Dependency Injection
+Background Tasks & Job Queues
+Alembic migrations
+pytest + API testing
+SQLAlchemy relationships and transactions
+Async SQLAlchemy
+Docker for Production
+Production security + CI/CD

@@ -1,0 +1,30 @@
+# Two contaners: API + a PostgreSQL database
+
+services:
+  db:
+    image: postgres:16
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_USER : postgres
+      POSTGRES_PASSWORD : classmate
+      POSTGRES_DB : student_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      retries: 10
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:classmate@db:5432/student_db
+    depends_on:
+      db:
+        condition: service_healthy # your api should only run when your db is ready
+
+volumes:
+  pgdata:

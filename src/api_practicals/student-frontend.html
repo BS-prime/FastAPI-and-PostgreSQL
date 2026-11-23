@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Records</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b1220;--panel:#111a2c;--panel2:#16213a;--ink:#e8ecf4;--muted:#8a96ae;--line:#222e47;--accent:#c8a96a;--accent-ink:#1b1507;--danger:#e8897d;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font:15px/1.55 Manrope,system-ui,sans-serif;background:radial-gradient(900px 420px at 88% -140px,rgba(200,169,106,.12),transparent 70%),var(--bg);min-height:100vh}
+.wrap{max-width:1080px;margin:0 auto;padding:44px 24px 80px}
+header{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:flex-end;margin-bottom:34px}
+h1{font:600 2.8rem/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.01em;margin:0}
+.api{display:flex;gap:10px;align-items:center;font-size:.85rem;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.ok{background:var(--accent);box-shadow:0 0 10px rgba(200,169,106,.7)}.dot.bad{background:var(--danger)}
+input,select,button{font:inherit;color:inherit}
+input,select{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 12px;min-width:0;transition:border-color .15s}
+input::placeholder{color:#5d6a85}
+input:hover,select:hover{border-color:#33415f}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,169,106,.22)}
+select option{background:var(--panel);color:var(--ink)}
+button{cursor:pointer;border:1px solid var(--line);background:transparent;border-radius:8px;padding:9px 18px;transition:border-color .15s,color .15s,background .15s}
+button:hover{border-color:var(--accent);color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button.primary:hover{background:#d6ba7e;color:var(--accent-ink)}
+button.danger{color:var(--danger)}
+button.danger:hover{border-color:var(--danger);color:var(--danger)}
+button:disabled{opacity:.4;cursor:default;border-color:var(--line);color:inherit}
+.bar{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-bottom:18px}
+.bar label{display:flex;flex-direction:column;gap:5px;font-size:.8rem;color:var(--muted)}
+.bar .grow{flex:1}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;border-radius:7px;background:transparent;padding:7px 18px;color:var(--muted)}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed=true]{background:var(--panel2);color:var(--accent);box-shadow:inset 0 0 0 1px rgba(200,169,106,.35)}
+.tablebox{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow-x:auto;box-shadow:0 30px 60px -40px rgba(0,0,0,.8)}
+table{width:100%;border-collapse:collapse;min-width:700px}
+th,td{text-align:left;padding:15px 20px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-weight:500;font-size:.82rem;color:var(--muted);background:rgba(255,255,255,.015)}
+tbody tr{transition:background .15s}
+tbody tr:hover{background:var(--panel2)}
+tbody tr:last-child td{border-bottom:0}
+td.act{text-align:right}td.act button{padding:5px 12px;margin-left:6px;font-size:.85rem}
+.grade{display:inline-block;min-width:2.4em;text-align:center;font-weight:600;color:var(--accent);border:1px solid rgba(200,169,106,.45);border-radius:999px;padding:1px 10px;font-size:.85rem}
+.empty{padding:48px;text-align:center;color:var(--muted)}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;color:var(--muted);font-size:.88rem;gap:10px;flex-wrap:wrap}
+.foot div{display:flex;gap:12px;align-items:center}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--ink);padding:0;width:min(460px,94vw);box-shadow:0 40px 90px -20px rgba(0,0,0,.85)}
+dialog::backdrop{background:rgba(5,9,18,.72);backdrop-filter:blur(3px)}
+form{padding:30px;display:grid;gap:14px}
+form h2{font:600 1.7rem/1.1 "Cormorant Garamond",Georgia,serif;margin:0 0 6px}
+form label{display:flex;flex-direction:column;gap:5px;font-size:.85rem;color:var(--muted)}
+form input{color:var(--ink)}
+form input[readonly]{opacity:.6}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.btns{display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
+#toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);max-width:92vw;background:var(--panel2);color:var(--ink);border:1px solid rgba(200,169,106,.5);padding:12px 20px;border-radius:10px;font-size:.9rem;display:none;z-index:9;box-shadow:0 20px 40px -10px rgba(0,0,0,.7)}
+#toast.err{border-color:var(--danger);color:var(--danger)}
+[hidden]{display:none!important}
+.dash-bar{display:flex;gap:14px;align-items:flex-end;margin-bottom:18px;flex-wrap:wrap}
+.dash-bar label{display:flex;flex-direction:column;gap:5px;font-size:.8rem;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.stat{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:32px 28px 28px;overflow:hidden}
+.stat::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.stat .v{font:600 4rem/1 "Cormorant Garamond",Georgia,serif;margin-bottom:12px;letter-spacing:.01em}
+.stat .v.name{font-size:2.4rem;line-height:1.15;min-height:4rem;display:flex;align-items:flex-end;overflow-wrap:anywhere}
+.stat .l{color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Student Records</h1>
+    <div class="api"><span class="dot" id="dot"></span><label for="base">API</label><input id="base" value="http://127.0.0.1:8000" size="24"><button id="connect">Connect</button></div>
+  </header>
+
+  <section id="view-dash" style="margin-bottom:28px">
+    <div class="dash-bar">
+      <label>Course<select id="d-course"><option value="">All courses</option></select></label>
+      <button id="d-refresh">Refresh</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v" id="st-total">–</div><div class="l">Students</div></div>
+      <div class="stat"><div class="v" id="st-gpa">–</div><div class="l">Average GPA</div></div>
+      <div class="stat"><div class="v" id="st-age">–</div><div class="l">Average age</div></div>
+      <div class="stat"><div class="v name" id="st-top">–</div><div class="l" id="st-top-l">Top scorer</div></div>
+    </div>
+  </section>
+
+  <div class="bar">
+    <div class="seg" role="group" aria-label="View">
+      <button data-mode="browse" aria-pressed="true">Browse</button>
+      <button data-mode="filter" aria-pressed="false">Filter</button>
+      <button data-mode="sort" aria-pressed="false">Sort</button>
+    </div>
+
+    <div id="c-browse" class="ctl">
+      <label>Per page<select id="limit"><option>2</option><option>5</option><option selected>10</option><option>25</option><option>100</option></select></label>
+    </div>
+    <div id="c-filter" class="ctl" hidden style="display:flex;gap:12px;flex-wrap:wrap">
+      <label>Course<input id="f-course" placeholder="Python"></label>
+      <label>Min age<input id="f-lo" type="number" min="1" max="100" style="width:80px"></label>
+      <label>Max age<input id="f-hi" type="number" min="2" max="99" style="width:80px"></label>
+    </div>
+    <div id="c-sort" class="ctl" hidden style="display:flex;gap:12px;flex-wrap:wrap">
+      <label>Sort by<select id="s-by"><option value="gpa">GPA</option><option value="name">Name</option><option value="age">Age</option></select></label>
+      <label>Order<select id="s-order"><option value="asc">Ascending</option><option value="desc">Descending</option></select></label>
+    </div>
+
+    <span class="grow"></span>
+    <label>Find by ID<input id="lookup" placeholder="S1001" size="9"></label>
+    <button id="find">Find</button>
+    <button id="new" class="primary">Add student</button>
+  </div>
+
+  <div class="tablebox">
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Age</th><th>Course</th><th>GPA</th><th>Grade</th><th>Email</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div id="empty" class="empty" hidden>No students match. Add one or change the view.</div>
+  </div>
+
+  <div class="foot">
+    <span id="count"></span>
+    <div id="pager"><button id="prev">Previous</button><span id="pg"></span><button id="next">Next</button></div>
+  </div>
+</div>
+
+<dialog id="dlg">
+  <form id="form" method="dialog">
+    <h2 id="dlg-title">Add student</h2>
+    <label>ID<input name="id" required placeholder="S1001"></label>
+    <label>Name<input name="name" required minlength="2" maxlength="50"></label>
+    <div class="two">
+      <label>Age<input name="age" type="number" required min="1" max="99"></label>
+      <label>GPA (0–4)<input name="gpa" type="number" required min="0" max="4" step="0.01"></label>
+    </div>
+    <label>Course<input name="course" required maxlength="50"></label>
+    <label>Email<input name="email" type="email" required></label>
+    <div class="btns"><button type="button" id="cancel">Cancel</button><button class="primary" id="save" type="submit">Save student</button></div>
+  </form>
+</dialog>
+<div id="toast" role="status"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const state = { mode: "browse", page: 1, total: 0, editing: null };
+const base = () => $("base").value.replace(/\/+$/, "");
+
+function toast(msg, err) {
+  const t = $("toast");
+  t.textContent = msg; t.className = err ? "err" : ""; t.style.display = "block";
+  clearTimeout(toast.h); toast.h = setTimeout(() => t.style.display = "none", 3800);
+}
+
+async function api(path, opts = {}) {
+  let res;
+  try {
+    res = await fetch(base() + path, { headers: { "Content-Type": "application/json" }, ...opts });
+  } catch {
+    $("dot").className = "dot bad";
+    throw new Error("Can’t reach the API. Check that the server is running and CORS is enabled.");
+  }
+  $("dot").className = "dot ok";
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const d = body.detail;
+    const msg = Array.isArray(d) ? d.map(e => `${(e.loc || []).slice(1).join(".")}: ${e.msg}`).join("; ") : d || res.statusText;
+    throw new Error(msg);
+  }
+  return body;
+}
+
+const gradeOf = g => g === 4 ? "S" : g >= 3.5 ? "A+" : g >= 3 ? "A" : g >= 2.5 ? "B" : g >= 2 ? "C" : "F";
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const toList = data => Array.isArray(data) ? data : Object.entries(data).map(([id, v]) => ({ id, ...v }));
+
+function render(list) {
+  $("rows").innerHTML = list.map(s => `<tr>
+    <td>${esc(s.id)}</td><td>${esc(s.name)}</td><td>${esc(s.age)}</td><td>${esc(s.course)}</td>
+    <td>${Number(s.gpa).toFixed(2)}</td><td><span class="grade">${gradeOf(s.gpa)}</span></td><td>${esc(s.email)}</td>
+    <td class="act"><button data-edit="${esc(s.id)}">Edit</button><button class="danger" data-del="${esc(s.id)}">Delete</button></td></tr>`).join("");
+  $("empty").hidden = list.length > 0;
+  list.forEach(s => cache[s.id] = s);
+}
+const cache = {};
+
+async function load() {
+  try {
+    let list, paged = false;
+    if (state.mode === "browse") {
+      const r = await api(`/paginate?page=${state.page}&limit=${$("limit").value}`);
+      list = r.students; state.total = r.total_students; paged = true;
+    } else if (state.mode === "filter") {
+      const q = new URLSearchParams();
+      if ($("f-course").value.trim()) q.set("course", $("f-course").value.trim());
+      if ($("f-lo").value) q.set("age_limit_lower", $("f-lo").value);
+      if ($("f-hi").value) q.set("age_limit_upper", $("f-hi").value);
+      list = toList(await api("/filter?" + q));
+    } else {
+      list = await api(`/sort?sort_by=${$("s-by").value}&order=${$("s-order").value}`);
+    }
+    render(list);
+    $("pager").hidden = !paged;
+    const pages = Math.max(1, Math.ceil(state.total / $("limit").value));
+    $("pg").textContent = `Page ${state.page} of ${pages}`;
+    $("prev").disabled = state.page <= 1; $("next").disabled = state.page >= pages;
+    $("count").textContent = paged ? `${state.total} students in total` : `${list.length} students shown`;
+  } catch (e) { toast(e.message, true); }
+}
+
+function setMode(m) {
+  state.mode = m; state.page = 1;
+  document.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === m));
+  ["browse", "filter", "sort"].forEach(k => $("c-" + k).hidden = k !== m);
+  load();
+}
+document.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => setMode(b.dataset.mode));
+["limit", "s-by", "s-order"].forEach(id => $(id).onchange = () => { state.page = 1; load(); });
+["f-course", "f-lo", "f-hi"].forEach(id => $(id).oninput = () => { clearTimeout(load.h); load.h = setTimeout(load, 300); });
+$("prev").onclick = () => { state.page--; load(); };
+$("next").onclick = () => { state.page++; load(); };
+$("connect").onclick = load;
+
+$("find").onclick = async () => {
+  const id = $("lookup").value.trim();
+  if (!id) { load(); return; }
+  try {
+    const s = await api("/student/" + encodeURIComponent(id));
+    render([{ id, ...s }]); $("pager").hidden = true; $("count").textContent = `Showing ${id}`;
+  } catch (e) { toast(e.message, true); }
+};
+$("lookup").onkeydown = e => { if (e.key === "Enter") $("find").click(); };
+
+function openForm(s) {
+  state.editing = s ? s.id : null;
+  const f = $("form");
+  f.reset();
+  $("dlg-title").textContent = s ? `Edit ${s.id}` : "Add student";
+  f.id.readOnly = !!s;
+  if (s) for (const k of ["id", "name", "age", "gpa", "course", "email"]) f[k].value = s[k];
+  $("dlg").showModal();
+}
+$("new").onclick = () => openForm(null);
+$("cancel").onclick = () => $("dlg").close();
+
+$("form").onsubmit = async e => {
+  e.preventDefault();
+  const f = e.target;
+  const body = { name: f.name.value.trim(), age: +f.age.value, course: f.course.value.trim(), gpa: +f.gpa.value, email: f.email.value.trim() };
+  try {
+    if (state.editing) {
+      await api("/update/" + encodeURIComponent(state.editing), { method: "PUT", body: JSON.stringify(body) });
+      toast("Student updated");
+    } else {
+      await api("/create", { method: "POST", body: JSON.stringify({ id: f.id.value.trim(), ...body }) });
+      toast("Student created");
+    }
+    $("dlg").close(); load(); loadDash();
+  } catch (err) { toast(err.message, true); }
+};
+
+$("rows").onclick = async e => {
+  const ed = e.target.dataset.edit, del = e.target.dataset.del;
+  if (ed) openForm(cache[ed]);
+  if (del && confirm(`Delete student ${del}? This can’t be undone.`)) {
+    try {
+      await api("/student_id/" + encodeURIComponent(del), { method: "DELETE" });
+      toast("Student deleted");
+      if (state.mode === "browse" && $("rows").children.length === 1 && state.page > 1) state.page--;
+      load(); loadDash();
+    } catch (err) { toast(err.message, true); }
+  }
+};
+
+/* Dashboard */
+let allStudents = [];
+
+function renderStats() {
+  const course = $("d-course").value;
+  const list = course ? allStudents.filter(s => s.course === course) : allStudents;
+  const avg = k => list.length ? (list.reduce((a, s) => a + Number(s[k]), 0) / list.length) : null;
+  $("st-total").textContent = list.length;
+  $("st-gpa").textContent = list.length ? avg("gpa").toFixed(2) : "–";
+  $("st-age").textContent = list.length ? avg("age").toFixed(1) : "–";
+
+  if (list.length) {
+    const best = Math.max(...list.map(s => Number(s.gpa)));
+    const tops = list.filter(s => Number(s.gpa) === best);
+    $("st-top").textContent = tops[0].name;
+    $("st-top-l").textContent = `Top scorer · GPA ${best.toFixed(2)} · ${tops[0].course}` + (tops.length > 1 ? ` (+${tops.length - 1} tied)` : "");
+  } else {
+    $("st-top").textContent = "–";
+    $("st-top-l").textContent = "Top scorer";
+  }
+}
+
+async function loadDash() {
+  try {
+    allStudents = toList(await api("/student"));
+    const sel = $("d-course"), keep = sel.value;
+    const courses = [...new Set(allStudents.map(s => s.course))].sort((a, b) => a.localeCompare(b));
+    sel.innerHTML = `<option value="">All courses</option>` + courses.map(c => `<option>${esc(c)}</option>`).join("");
+    sel.value = courses.includes(keep) ? keep : "";
+    renderStats();
+  } catch (e) { toast(e.message, true); }
+}
+
+$("d-course").onchange = renderStats;
+$("d-refresh").onclick = loadDash;
+
+load();
+loadDash();
+</script>
+</body>
+</html>
