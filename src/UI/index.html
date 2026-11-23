@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Records</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>Student records</h1>
+      <p class="sub">Add, find, update and remove students. Every change goes straight to your FastAPI database.</p>
+    </div>
+    <div class="conn">
+      <span class="dot" id="dot"></span><span id="connText">Connecting…</span>
+      <button class="btn sm ghost" id="btnApi" type="button">API URL</button>
+    </div>
+  </header>
+
+  <section class="stats" aria-label="Summary">
+    <div class="stat"><b id="sTotal">–</b><span>Students in database</span></div>
+    <div class="stat"><b id="sAvg">–</b><span>Average marks on this page</span></div>
+    <div class="stat"><b id="sTop">–</b><span>Highest marks on this page</span>
+      <div class="dist" id="dist" aria-hidden="true"></div></div>
+  </section>
+
+  <div class="lookup">
+    <input id="lookupId" placeholder="Find a student by ID, e.g. S001" aria-label="Student ID">
+    <button class="btn" id="btnLookup" type="button">Find student</button>
+  </div>
+
+  <section class="toolbar" aria-label="Filters">
+    <div class="field"><label for="fCourse">Course</label><input id="fCourse" placeholder="Filter by course name"></div>
+    <div class="field"><label for="fSort">Sort by</label>
+      <select id="fSort"><option value="">ID (default)</option><option value="marks">Marks</option><option value="age">Age</option><option value="name">Name</option></select></div>
+    <div class="field"><label for="fOrder">Order</label>
+      <select id="fOrder"><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
+    <div class="field"><label for="fLimit">Per page</label>
+      <select id="fLimit"><option>2</option><option>5</option><option selected>10</option><option>25</option><option>50</option></select></div>
+    <div class="actions">
+      <button class="btn" id="btnReset" type="button">Reset</button>
+      <button class="btn primary" id="btnNew" type="button">Add student</button>
+    </div>
+  </section>
+
+  <div class="panel">
+    <table>
+      <thead><tr>
+        <th>ID</th>
+        <th><button type="button" data-sort="name">Student <span class="arr" data-arr="name">▲</span></button></th>
+        <th>Course</th>
+        <th><button type="button" data-sort="age">Age <span class="arr" data-arr="age">▲</span></button></th>
+        <th><button type="button" data-sort="marks">Marks <span class="arr" data-arr="marks">▲</span></button></th>
+        <th>Grade</th><th></th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div id="empty" class="empty" hidden></div>
+  </div>
+
+  <div class="pager">
+    <span id="pageInfo"></span>
+    <div>
+      <button class="btn sm" id="prev" type="button">Previous</button>
+      <button class="btn sm" id="next" type="button">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- student form -->
+<dialog id="formDlg">
+  <form id="form" novalidate>
+    <div class="dlg-head"><h2 id="formTitle">Add student</h2><p id="formSub"></p></div>
+    <div class="dlg-body">
+      <div class="field"><label for="iId">Student ID</label><input id="iId" name="id" placeholder="S001" autocomplete="off"><span class="err"></span></div>
+      <div class="field"><label for="iAge">Age</label><input id="iAge" name="age" type="number" placeholder="21"><span class="err"></span></div>
+      <div class="field full"><label for="iName">Full name</label><input id="iName" name="name" placeholder="Varun Verma" autocomplete="off"><span class="err"></span></div>
+      <div class="field full"><label for="iEmail">Email</label><input id="iEmail" name="email" type="email" placeholder="varun@example.com" autocomplete="off"><span class="err"></span></div>
+      <div class="field"><label for="iCourse">Course</label><input id="iCourse" name="course" placeholder="Python" autocomplete="off"><span class="err"></span></div>
+      <div class="field"><label for="iMarks">Marks (0–100)</label><input id="iMarks" name="marks" type="number" placeholder="85"><span class="err"></span></div>
+      <div class="form-error" id="formError" hidden></div>
+    </div>
+    <div class="dlg-foot">
+      <button class="btn" type="button" id="formCancel">Cancel</button>
+      <button class="btn primary" type="submit" id="formSave">Save student</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- delete confirm -->
+<dialog id="delDlg">
+  <div class="dlg-head"><h2>Delete student?</h2><p id="delText"></p></div>
+  <div class="dlg-foot" style="border:0">
+    <button class="btn" type="button" id="delCancel">Keep student</button>
+    <button class="btn danger" type="button" id="delConfirm">Delete student</button>
+  </div>
+</dialog>
+
+<!-- api url -->
+<dialog id="apiDlg">
+  <div class="dlg-head"><h2>API address</h2><p>Where your FastAPI server is running.</p></div>
+  <div class="dlg-body"><div class="field full"><label for="apiUrl">Base URL</label><input id="apiUrl" placeholder="http://127.0.0.1:8000"></div></div>
+  <div class="dlg-foot">
+    <button class="btn" type="button" id="apiCancel">Cancel</button>
+    <button class="btn primary" type="button" id="apiSave">Save and reconnect</button>
+  </div>
+</dialog>
+
+<div id="toasts" role="status" aria-live="polite"></div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
